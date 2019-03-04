@@ -44,5 +44,7 @@ def cplex_solve(X, y, reg_lambda):
     model.solve()
     # get coefficients
     values = model.solution.get_values()
-    return values
+    intercept = values[0]
+    coef = values[1:p+1]
+    return intercept, coef
 
