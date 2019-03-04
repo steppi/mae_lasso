@@ -15,8 +15,10 @@ def cplex_solve(X, y, reg_lambda):
 
     # Add variables and objective function
     obj = [0.0]*(p+1) + [1.0]*n + [reg_lambda]*p
-    model.variables.add(obj=obj)
-    
+
+    lower_bounds = [-cplex.infinity]*(p+1) + [0.0]*(n+p)
+    model.variables.add(obj=obj, lb=lower_bounds)
+
     # Create epsilon constraints
     rhs = y.tolist()*2
     senses = 'L'*n + 'G'*n
@@ -32,14 +34,14 @@ def cplex_solve(X, y, reg_lambda):
 
     # Create delta constraints
     rhs = [0]*2*p
-    senses = 'G'*(2*p)
+    senses = 'L'*(2*p)
     delta_upper = [cplex.SparsePair(ind=[1+i, n+p+1+i], val=[1.0, -1.0])
                    for i in range(p)]
     delta_lower = [cplex.SparsePair(ind=[1+i, n+p+1+i], val=[-1.0, -1.0])
                    for i in range(p)]
+
     model.linear_constraints.add(lin_expr=delta_upper+delta_lower, rhs=rhs,
                                  senses=senses)
-
     # solve problem
     model.solve()
     # get coefficients
@@ -47,4 +49,3 @@ def cplex_solve(X, y, reg_lambda):
     intercept = values[0]
     coef = values[1:p+1]
     return intercept, coef
-
