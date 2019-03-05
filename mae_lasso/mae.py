@@ -22,7 +22,6 @@ class MAERegressor(BaseEstimator, RegressorMixin):
         if self.solver == 'cplex':
             from .cplex_solver import cplex_solve
             intercept, coef = cplex_solve(X, y, self.reg_lambda)
-            print(sum(coef))
         else:
             raise ValueError('MAERegressor only supports the cplex solver')
         self.intercept_, self.coef_ = intercept, coef
