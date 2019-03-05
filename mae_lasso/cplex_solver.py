@@ -14,7 +14,7 @@ def cplex_solve(X, y, reg_lambda):
     model.parameters.simplex.display.set(0)
 
     # Add variables and objective function
-    obj = [0.0]*(p+1) + [1.0]*n + [reg_lambda]*p
+    obj = [0.0]*(p+1) + [1.0]*n + [n*reg_lambda]*p
 
     lower_bounds = [-cplex.infinity]*(p+1) + [0.0]*(n+p)
     model.variables.add(obj=obj, lb=lower_bounds)
