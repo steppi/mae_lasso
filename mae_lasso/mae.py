@@ -10,15 +10,9 @@ logger = logging.getLogger(__file__)
 
 class MAERegressor(BaseEstimator, RegressorMixin):
     """Lasso regression with MAE loss function."""
-    def __init__(self, reg_lambda=1.0, solver='cplex', n_jobs=1):
+    def __init__(self, reg_lambda=1.0, solver='cplex', threads=1):
         self.reg_lambda = reg_lambda
         self.solver = solver
-        if n_jobs == -1:
-            threads = 0
-        elif n_jobs > 0:
-            threads == n_jobs
-        else:
-            raise ValueError('bad value for n_jobs: %s' % n_jobs)
         self.threads = threads
 
     def fit(self, X, y=None):
