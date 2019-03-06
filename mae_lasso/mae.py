@@ -10,9 +10,16 @@ logger = logging.getLogger(__file__)
 
 class MAERegressor(BaseEstimator, RegressorMixin):
     """Lasso regression with MAE loss function."""
-    def __init__(self, reg_lambda=1.0, solver='cplex'):
+    def __init__(self, reg_lambda=1.0, solver='cplex', n_jobs=1):
         self.reg_lambda = reg_lambda
         self.solver = solver
+        if n_jobs == -1:
+            threads = 0
+        elif n_jobs > 0:
+            threads == n_jobs
+        else:
+            raise ValueError('bad value for n_jobs: %s' % n_jobs)
+        self.threads = threads
 
     def fit(self, X, y=None):
         """Fit the model according to the given training data"""
@@ -21,7 +28,7 @@ class MAERegressor(BaseEstimator, RegressorMixin):
 
         if self.solver == 'cplex':
             from .cplex_solver import cplex_solve
-            intercept, coef = cplex_solve(X, y, self.reg_lambda)
+            intercept, coef = cplex_solve(X, y, self.reg_lambda, self.threads)
         else:
             raise ValueError('MAERegressor only supports the cplex solver')
         self.intercept_, self.coef_ = intercept, coef

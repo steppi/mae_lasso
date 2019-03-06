@@ -2,7 +2,7 @@ import cplex
 import numpy as np
 
 
-def cplex_solve(X, y, reg_lambda):
+def cplex_solve(X, y, reg_lambda, threads):
     """MAE Regression solver using cplex Python API"""
     n, p = X.shape
     model = cplex.Cplex()
@@ -11,6 +11,7 @@ def cplex_solve(X, y, reg_lambda):
     # Set display parameters to avoid output being printed to terminal
     model.parameters.barrier.display.set(0)
     model.parameters.simplex.display.set(0)
+    model.parameters.threads.set(threads)
 
     # Add variables and objective function
     obj = [0.0]*(p+1) + [1.0]*n + [n*reg_lambda]*p
