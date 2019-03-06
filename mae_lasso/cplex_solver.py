@@ -1,6 +1,5 @@
-import numpy as np
-
 import cplex
+import numpy as np
 
 
 def cplex_solve(X, y, reg_lambda):
@@ -48,4 +47,4 @@ def cplex_solve(X, y, reg_lambda):
     values = model.solution.get_values()
     intercept = values[0]
     coef = values[1:p+1]
-    return intercept, coef
+    return np.float64(intercept), np.array(coef)
