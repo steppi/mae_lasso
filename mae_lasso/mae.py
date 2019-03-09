@@ -1,4 +1,5 @@
 import logging
+import numpy as np
 
 from sklearn.metrics import mean_absolute_error
 from sklearn.base import BaseEstimator, RegressorMixin
@@ -26,6 +27,14 @@ class MAERegressor(BaseEstimator, RegressorMixin):
         else:
             raise ValueError('MAERegressor only supports the cplex solver')
         self.intercept_, self.coef_ = intercept, coef
+
+        # Get feature importances: coeffients scaled by median absolute
+        # deviations of corresponding variables
+        medians = np.median(X, axis=1)
+        medians.shape = (len(medians), 1)
+        AD = abs(X - medians)
+        MAD = np.median(AD, axis=1)
+        self.feature_importance_ = MAD*coef
 
     def _decision_function(self, X):
         check_is_fitted(self, 'coef_')
