@@ -30,10 +30,10 @@ class MAERegressor(BaseEstimator, RegressorMixin):
 
         # Get feature importances: coeffients scaled by median absolute
         # deviations of corresponding variables
-        medians = np.median(X, axis=1)
-        medians.shape = (len(medians), 1)
+        medians = np.median(X, axis=0)
+        medians.shape = (1, len(medians))
         AD = abs(X - medians)
-        MAD = np.median(AD, axis=1)
+        MAD = np.median(AD, axis=0)
         self.feature_importance_ = MAD*coef
 
     def _decision_function(self, X):
