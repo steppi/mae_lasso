@@ -36,6 +36,9 @@ class MAERegressor(BaseEstimator, RegressorMixin):
         MAD = np.median(AD, axis=0)
         self.feature_importance_ = MAD*coef
 
+        median_response = np.median(y)
+        self.median_response_ = median_response
+
     def _decision_function(self, X):
         check_is_fitted(self, 'coef_')
         X = check_array(X, accept_sparse=['csr', 'csc', 'coo'])
@@ -46,4 +49,10 @@ class MAERegressor(BaseEstimator, RegressorMixin):
         return self._decision_function(X)
 
     def score(self, X, y):
-        return -mean_absolute_error(self.predict(X), y)
+        AD = mean_absolute_error(self.predict(X), y)
+        AD0 = mean_absolute_error(np.full(self.median_response_, len(y)), y)
+        if AD0 == 0:
+            R1 = 0.
+        else:
+            R1 = (AD0 - AD)/AD0
+        return R1
