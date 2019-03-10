@@ -46,4 +46,4 @@ class MAERegressor(BaseEstimator, RegressorMixin):
         return self._decision_function(X)
 
     def score(self, X, y):
-        return mean_absolute_error(self.predict(X), y)
+        return -mean_absolute_error(self.predict(X), y)
