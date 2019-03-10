@@ -50,7 +50,7 @@ class MAERegressor(BaseEstimator, RegressorMixin):
 
     def score(self, X, y):
         AD = mean_absolute_error(self.predict(X), y)
-        AD0 = mean_absolute_error(np.full(self.median_response_, len(y)), y)
+        AD0 = mean_absolute_error(np.full(len(y), self.median_response_), y)
         if AD0 == 0:
             R1 = 0.
         else:
